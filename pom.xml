@@ -141,15 +141,18 @@
                 </plugins>
             </build>
             <distributionManagement>
-                <snapshotRepository>
-                    <id>oss</id>
-                    <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-                </snapshotRepository>
                 <repository>
-                    <id>oss</id>
-                    <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+                    <id>rdc-releases</id>
+                    <name>Releases</name>
+                    <url>https://packages.aliyun.com/maven/repository/2101383-release-XEoSnW/</url>
                 </repository>
+                <snapshotRepository>
+                    <id>rdc-snapshots</id>
+                    <name>Snapshots</name>
+                    <url>https://packages.aliyun.com/maven/repository/2101383-snapshot-EJtGGH/</url>
+                </snapshotRepository>
             </distributionManagement>
+
         </profile>
     </profiles>
 </project>
