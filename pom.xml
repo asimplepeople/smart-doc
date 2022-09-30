@@ -122,24 +122,6 @@
     <profiles>
         <profile>
             <id>release</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-gpg-plugin</artifactId>
-                        <version>3.0.1</version>
-                        <executions>
-                            <execution>
-                                <id>sign-artifacts</id>
-                                <phase>verify</phase>
-                                <goals>
-                                    <goal>sign</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
             <distributionManagement>
                 <repository>
                     <id>rdc-releases</id>
@@ -152,7 +134,6 @@
                     <url>https://packages.aliyun.com/maven/repository/2101383-snapshot-EJtGGH/</url>
                 </snapshotRepository>
             </distributionManagement>
-
         </profile>
     </profiles>
 </project>
