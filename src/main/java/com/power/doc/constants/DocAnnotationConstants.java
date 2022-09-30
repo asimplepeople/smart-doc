@@ -98,4 +98,9 @@ public interface DocAnnotationConstants {
      * Jsr303 param regexp
      */
     String REGEXP = "regexp";
+
+    /**
+     * YdcGateway params
+     */
+    String YDCGATEWAY = "YdcGateway";
 }

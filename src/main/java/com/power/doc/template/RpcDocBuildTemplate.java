@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -60,6 +61,7 @@ import com.thoughtworks.qdox.model.JavaClass;
 import com.thoughtworks.qdox.model.JavaMethod;
 import com.thoughtworks.qdox.model.JavaParameter;
 import com.thoughtworks.qdox.model.JavaType;
+import com.thoughtworks.qdox.model.expression.AnnotationValue;
 
 import static com.power.doc.constants.DocTags.DEPRECATED;
 import static com.power.doc.constants.DocTags.IGNORE;
@@ -133,12 +135,21 @@ public class RpcDocBuildTemplate implements IDocBuildTemplate<RpcApiDoc> {
         throw new RuntimeException("Unable to find comment for method " + method.getName() + " in " + cls.getCanonicalName());
       }
       boolean deprecated = false;
+      String ydcgatewayUrl = null;
       //Deprecated
       List<JavaAnnotation> annotations = method.getAnnotations();
       for (JavaAnnotation annotation : annotations) {
         String annotationName = annotation.getType().getName();
         if (DocAnnotationConstants.DEPRECATED.equals(annotationName)) {
           deprecated = true;
+        }
+        System.out.println("annotationName===================================================" + annotationName);
+        if(DocAnnotationConstants.YDCGATEWAY.equals(annotationName)){
+          AnnotationValue annotationValue = annotation.getProperty("url");
+          System.out.println("url===================================================" + DocUtil.resolveAnnotationValue(annotationValue));
+          if (Objects.nonNull(annotationValue)) {
+            ydcgatewayUrl = DocUtil.resolveAnnotationValue(annotationValue);
+          }
         }
       }
       if (Objects.nonNull(method.getTagByName(DEPRECATED))) {
@@ -165,6 +176,7 @@ public class RpcDocBuildTemplate implements IDocBuildTemplate<RpcApiDoc> {
         apiMethodDoc.setAuthor(authorValue);
       }
       apiMethodDoc.setDetail(apiNoteValue != null ? apiNoteValue : "");
+      apiMethodDoc.setDetail(Optional.ofNullable(ydcgatewayUrl).orElse(apiMethodDoc.getDetail()));
       if (Objects.nonNull(method.getTagByName(IGNORE))) {
         continue;
       }
