@@ -143,10 +143,8 @@ public class RpcDocBuildTemplate implements IDocBuildTemplate<RpcApiDoc> {
         if (DocAnnotationConstants.DEPRECATED.equals(annotationName)) {
           deprecated = true;
         }
-        System.out.println("annotationName===================================================" + annotationName);
         if(DocAnnotationConstants.YDCGATEWAY.equals(annotationName)){
           AnnotationValue annotationValue = annotation.getProperty("url");
-          System.out.println("url===================================================" + DocUtil.resolveAnnotationValue(annotationValue));
           if (Objects.nonNull(annotationValue)) {
             ydcgatewayUrl = DocUtil.resolveAnnotationValue(annotationValue);
           }
