@@ -31,6 +31,7 @@ import com.power.doc.model.ApiDoc;
 import com.power.doc.model.ApiGroup;
 import com.power.doc.model.ApiMethodDoc;
 import com.power.doc.model.annotation.FrameworkAnnotations;
+import com.power.doc.model.rpc.RpcApiDoc;
 import com.power.doc.utils.DocPathUtil;
 import com.power.doc.utils.DocUtil;
 
@@ -65,6 +66,64 @@ public interface IDocBuildTemplate<T> {
         }
         List<ApiGroup> groups = apiConfig.getGroups();
         List<ApiDoc> finalApiDocs = new ArrayList<>();
+
+        ApiDoc defaultGroup = ApiDoc.buildGroupApiDoc(TornaConstants.DEFAULT_GROUP_CODE);
+        // show default group
+        AtomicInteger order = new AtomicInteger(1);
+        finalApiDocs.add(defaultGroup);
+
+        if (CollectionUtil.isEmpty(groups)) {
+            defaultGroup.setOrder(order.getAndIncrement());
+            defaultGroup.getChildrenApiDocs().addAll(apiDocList);
+            return finalApiDocs;
+        }
+        Map<String, String> hasInsert = new HashMap<>();
+        for (ApiGroup group : groups) {
+            ApiDoc groupApiDoc = ApiDoc.buildGroupApiDoc(group.getName());
+            finalApiDocs.add(groupApiDoc);
+            for (ApiDoc doc : apiDocList) {
+                if (hasInsert.containsKey(doc.getAlias())) {
+                    continue;
+                }
+                if (!DocUtil.isMatch(group.getApis(), doc.getPackageName() + "." + doc.getName())) {
+                    continue;
+                }
+                hasInsert.put(doc.getAlias(), null);
+                groupApiDoc.getChildrenApiDocs().add(doc);
+                doc.setOrder(groupApiDoc.getChildrenApiDocs().size());
+                doc.setGroup(group.getName());
+                if (StringUtil.isEmpty(group.getPaths())) {
+                    continue;
+                }
+                List<ApiMethodDoc> methodDocs = doc.getList().stream()
+                        .filter(l -> DocPathUtil.matches(l.getPath(), group.getPaths(), null))
+                        .collect(Collectors.toList());
+                doc.setList(methodDocs);
+            }
+        }
+        // Ungrouped join the default group
+        for (ApiDoc doc : apiDocList) {
+            String key = doc.getAlias();
+            if (!hasInsert.containsKey(key)) {
+                defaultGroup.getChildrenApiDocs().add(doc);
+                doc.setOrder(defaultGroup.getChildrenApiDocs().size());
+                hasInsert.put(doc.getAlias(), null);
+            }
+        }
+        if (CollectionUtil.isEmpty(defaultGroup.getChildrenApiDocs())) {
+            finalApiDocs.remove(defaultGroup);
+        }
+        finalApiDocs.forEach(group -> group.setOrder(order.getAndIncrement()));
+        return finalApiDocs;
+    }
+
+
+    default List<RpcApiDoc> handleRpcApiGroup(List<RpcApiDoc> apiDocList, ApiConfig apiConfig) {
+        if (CollectionUtil.isEmpty(apiDocList) || apiConfig == null) {
+            return apiDocList;
+        }
+        List<ApiGroup> groups = apiConfig.getGroups();
+        List<ApiDoc> result = new ArrayList<>();
 
         ApiDoc defaultGroup = ApiDoc.buildGroupApiDoc(TornaConstants.DEFAULT_GROUP_CODE);
         // show default group
