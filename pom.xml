@@ -1,12 +1,12 @@
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-<!--    <groupId>com.github.shalousun</groupId>-->
     <groupId>com.yundong</groupId>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>smart-doc</artifactId>
     <packaging>jar</packaging>
     <version>2.5.3-SNAPSHOT</version>
+
 
     <name>smart-doc</name>
     <url>https://github.com/smart-doc-group/smart-doc.git</url>
