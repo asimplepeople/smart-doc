@@ -22,7 +22,6 @@
  */
 package com.power.doc.builder;
 
-import com.google.gson.Gson;
 import com.power.common.util.CollectionUtil;
 import com.power.common.util.FileUtil;
 import com.power.common.util.StringUtil;
@@ -47,7 +46,10 @@ import static com.power.doc.constants.DocGlobalConstants.ARRAY;
  */
 public class OpenApiBuilder {
 
-    static Map<String, String> stringComponent = new HashMap<String, String>() {{
+    static Map<String, String> stringComponent = new HashMap<String, String>() {
+        private static final long serialVersionUID = 9088740723222413913L;
+
+        {
         put("type", "string");
         put("format", "string");
     }};
@@ -294,9 +296,7 @@ public class OpenApiBuilder {
             schema.put("type", ARRAY);
             innerScheme.put("$ref", responseRef);
             schema.put("items", innerScheme);
-        }
-
-        else if (isRep && CollectionUtil.isNotEmpty(apiMethodDoc.getResponseParams())) {
+        } else if (isRep && CollectionUtil.isNotEmpty(apiMethodDoc.getResponseParams())) {
             schema.put("$ref", responseRef);
         } else if (!isRep && CollectionUtil.isNotEmpty(apiMethodDoc.getRequestParams())) {
             schema.put("$ref", requestRef);
@@ -345,7 +345,7 @@ public class OpenApiBuilder {
      * Build request parameters
      *
      * @param apiMethodDoc API data for the method
-     * @return
+     * @return list of parameters
      */
     private static List<Map<String, Object>> buildParameters(ApiMethodDoc apiMethodDoc) {
         Map<String, Object> parameters;
@@ -411,7 +411,7 @@ public class OpenApiBuilder {
      * If it is a get request or @PathVariable set the request parameters
      *
      * @param apiParam Parameter information
-     * @return
+     * @return parameters schema
      */
     private static Map<String, Object> buildParametersSchema(ApiParam apiParam) {
         Map<String, Object> schema = new HashMap<>(10);
@@ -442,7 +442,7 @@ public class OpenApiBuilder {
      * If the header is included, set the request parameters
      *
      * @param header header
-     * @return
+     * @return ParametersSchema
      */
     private static Map<String, Object> buildParametersSchema(ApiReqParam header) {
         Map<String, Object> schema = new HashMap<>(10);
@@ -456,7 +456,7 @@ public class OpenApiBuilder {
      * build response
      *
      * @param apiMethodDoc ApiMethodDoc
-     * @return
+     * @return response info
      */
     private static Map<String, Object> buildResponses(ApiConfig apiConfig, ApiMethodDoc apiMethodDoc) {
         Map<String, Object> response = new HashMap<>(10);
@@ -468,7 +468,7 @@ public class OpenApiBuilder {
      * response body
      *
      * @param apiMethodDoc ApiMethodDoc
-     * @return
+     * @return response body
      */
     private static Map<String, Object> buildResponsesBody(ApiConfig apiConfig, ApiMethodDoc apiMethodDoc) {
         Map<String, Object> responseBody = new HashMap<>(10);

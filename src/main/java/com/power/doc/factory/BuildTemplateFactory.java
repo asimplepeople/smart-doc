@@ -34,10 +34,10 @@ public class BuildTemplateFactory {
      * Get Doc build template
      *
      * @param framework framework name
-     * @param <T> API doc type
+     * @param <T>       API doc type
      * @return Implements of IDocBuildTemplate
      */
-    public static <T> IDocBuildTemplate<T> getDocBuildTemplate(String framework) {
+    public static <T> IDocBuildTemplate getDocBuildTemplate(String framework) {
         String className = FrameworkEnum.getClassNameByFramework(framework);
         try {
             return (IDocBuildTemplate) Class.forName(className).newInstance();

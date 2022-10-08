@@ -22,21 +22,18 @@
  */
 package com.power.doc.handler;
 
-import com.power.common.util.StringUtil;
-import com.power.common.util.UrlUtil;
 import com.power.doc.builder.ProjectDocConfigBuilder;
 import com.power.doc.constants.DocAnnotationConstants;
-import com.power.doc.constants.DocGlobalConstants;
 import com.power.doc.constants.Methods;
 import com.power.doc.constants.SolonAnnotations;
+import com.power.doc.function.RequestMappingFunc;
+import com.power.doc.model.annotation.FrameworkAnnotations;
 import com.power.doc.model.request.RequestMapping;
-import com.power.doc.utils.DocUrlUtil;
 import com.power.doc.utils.DocUtil;
 import com.thoughtworks.qdox.model.JavaAnnotation;
 import com.thoughtworks.qdox.model.JavaMethod;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 import static com.power.doc.constants.DocTags.DEPRECATED;
@@ -45,7 +42,7 @@ import static com.power.doc.constants.DocTags.IGNORE;
 /**
  * @author noear 2022/2/19 created
  */
-public class SolonRequestMappingHandler {
+public class SolonRequestMappingHandler implements IRequestMappingHandler {
 
     /**
      * handle solon request mapping
@@ -53,18 +50,19 @@ public class SolonRequestMappingHandler {
      * @param projectBuilder    projectBuilder
      * @param controllerBaseUrl solon mvc controller base url
      * @param method            JavaMethod
-     * @param constantsMap      project constant container
-     * @param isRemoting        isRemoting
      * @return RequestMapping
      */
-    public RequestMapping handle(ProjectDocConfigBuilder projectBuilder, String controllerBaseUrl, JavaMethod method, Map<String, String> constantsMap, boolean isRemoting) {
+    public RequestMapping handle(ProjectDocConfigBuilder projectBuilder,
+                                 String controllerBaseUrl,
+                                 JavaMethod method, FrameworkAnnotations frameworkAnnotations,
+                                 RequestMappingFunc requestMappingFunc) {
+        if (Objects.nonNull(method.getTagByName(IGNORE))) {
+            return null;
+        }
         List<JavaAnnotation> annotations = method.getAnnotations();
-        String url;
-        String methodType = "GET";//默认为get
+        String methodType = "GET";//default is get
         String shortUrl = null;
         String mediaType = null;
-        String serverUrl = projectBuilder.getServerUrl();
-        String contextPath = projectBuilder.getApiConfig().getPathPrefix();
         boolean deprecated = false;
         for (JavaAnnotation annotation : annotations) {
             String annotationName = annotation.getType().getName();
@@ -73,13 +71,11 @@ public class SolonRequestMappingHandler {
             }
             if (SolonAnnotations.REQUEST_MAPPING.equals(annotationName) || SolonAnnotations.REQUEST_MAPPING_FULLY.equals(annotationName)) {
                 shortUrl = DocUtil.handleMappingValue(annotation);
-
                 Object produces = annotation.getNamedParameter("produces");
                 if (Objects.nonNull(produces)) {
                     mediaType = produces.toString();
                 }
             }
-
             if (SolonAnnotations.GET_MAPPING.equals(annotationName) || SolonAnnotations.GET_MAPPING_FULLY.equals(annotationName)) {
                 methodType = Methods.GET.getValue();
             } else if (SolonAnnotations.POST_MAPPING.equals(annotationName) || SolonAnnotations.POST_MAPPING_FULLY.equals(annotationName)) {
@@ -92,41 +88,16 @@ public class SolonRequestMappingHandler {
                 methodType = Methods.DELETE.getValue();
             }
         }
-
-        if(isRemoting) {
-            methodType = Methods.POST.getValue();
-
-            if (shortUrl == null) {
-                shortUrl = method.getName();
-            }
-
-            if (mediaType == null) {
-                mediaType = "text/json";
-            }
-        }
-
         if (Objects.nonNull(method.getTagByName(DEPRECATED))) {
             deprecated = true;
         }
-
-        if (Objects.nonNull(shortUrl)) {
-            if (Objects.nonNull(method.getTagByName(IGNORE))) {
-                return null;
-            }
-            shortUrl = StringUtil.removeQuotes(shortUrl);
-            url = DocUrlUtil.getMvcUrls(serverUrl, contextPath + "/" + controllerBaseUrl, shortUrl);
-            shortUrl = DocUrlUtil.getMvcUrls(DocGlobalConstants.EMPTY, contextPath + "/" + controllerBaseUrl, shortUrl);
-            String urlSuffix = projectBuilder.getApiConfig().getUrlSuffix();
-            if (StringUtil.isNotEmpty(urlSuffix)) {
-                url = UrlUtil.simplifyUrl(StringUtil.trim(url)) + urlSuffix;
-                shortUrl = UrlUtil.simplifyUrl(StringUtil.trim(shortUrl)) + urlSuffix;
-            } else {
-                url = UrlUtil.simplifyUrl(StringUtil.trim(url));
-                shortUrl = UrlUtil.simplifyUrl(StringUtil.trim(shortUrl));
-            }
-            return RequestMapping.builder().setMediaType(mediaType).setMethodType(methodType)
-                    .setUrl(url).setShortUrl(shortUrl).setDeprecated(deprecated);
-        }
-        return null;
+        RequestMapping requestMapping = RequestMapping.builder()
+                .setMediaType(mediaType)
+                .setMethodType(methodType)
+                .setDeprecated(deprecated)
+                .setShortUrl(shortUrl);
+        requestMapping = formatMappingData(projectBuilder, controllerBaseUrl, requestMapping);
+        requestMappingFunc.process(method.getDeclaringClass(), requestMapping);
+        return requestMapping;
     }
 }

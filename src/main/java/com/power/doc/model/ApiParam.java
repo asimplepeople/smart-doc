@@ -27,13 +27,15 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 
+import static com.power.doc.constants.DocGlobalConstants.PARAM_PREFIX;
+
 /**
  * @author yu 2019/9/27.
  */
 public class ApiParam {
 
     /**
-     * 所属实体类名
+     * param class name
      */
     private String className;
     /**
@@ -110,8 +112,8 @@ public class ApiParam {
     private String maxLength;
 
     /**
-     *  is config.json config param
-     *  default false
+     * is config.json config param
+     * default false
      */
     private boolean configParam;
     /**
@@ -136,16 +138,16 @@ public class ApiParam {
         return field;
     }
 
+    public ApiParam setField(String field) {
+        this.field = field;
+        return this;
+    }
+
     public String getSourceField() {
         if (StringUtils.isEmpty(field)) {
             return StringUtils.EMPTY;
         }
-        return field.replaceAll("└─", "").replaceAll("&nbsp;", "");
-    }
-
-    public ApiParam setField(String field) {
-        this.field = field;
-        return this;
+        return field.replaceAll(PARAM_PREFIX, "").replaceAll("&nbsp;", "");
     }
 
     public String getType() {

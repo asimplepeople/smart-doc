@@ -2,41 +2,46 @@ package com.power.doc.constants;
 
 /**
  * Java EE has been renamed Jakarta EE, this class is an upgraded replacement for {@link JAXRSAnnotations}
- *
+ * <p>
  * JAX-RS Annotations
  *
  * @author youngledo
  */
 public final class JakartaJaxrsAnnotations {
 
-    private JakartaJaxrsAnnotations() {
-        throw new IllegalStateException("Utility class");
-    }
-
     /**
      * JAX-RS@DefaultValue
      */
     public static final String JAX_DEFAULT_VALUE_FULLY = "jakarta.ws.rs.DefaultValue";
+
+    public static final String JAX_DEFAULT_VALUE = "DefaultValue";
     /**
      * JAX-RS@HeaderParam
      */
     public static final String JAX_HEADER_PARAM_FULLY = "jakarta.ws.rs.HeaderParam";
+
+    public static final String JAX_HEADER_PARAM = "HeaderParam";
     /**
      * JAX-RS@PathParam
      */
     public static final String JAX_PATH_PARAM_FULLY = "jakarta.ws.rs.PathParam";
+
+    public static final String JAX_PATH_PARAM = "PathParam";
     /**
      * JAX-RS@PATH
      */
     public static final String JAX_PATH_FULLY = "jakarta.ws.rs.Path";
+    public static final String JAX_PATH = "Path";
     /**
      * JAX-RS@Produces
      */
     public static final String JAX_PRODUCES_FULLY = "jakarta.ws.rs.Produces";
+    public static final String JAX_PRODUCES = "Produces";
     /**
      * JAX-RS@Consumes
      */
     public static final String JAX_CONSUMES_FULLY = "jakarta.ws.rs.Consumes";
+    public static final String JAX_CONSUMES = "Consumes";
     /**
      * JAX-RS@GET
      */
@@ -53,7 +58,6 @@ public final class JakartaJaxrsAnnotations {
      * JAX-RS@DELETE
      */
     public static final String DELETE = "DELETE";
-
     /**
      * JAX-RS@GET
      */
@@ -82,5 +86,8 @@ public final class JakartaJaxrsAnnotations {
      * JAX-RS@HEAD
      */
     public static final String JAX_HEAD_FULLY = "jakarta.ws.rs.HEAD";
+    private JakartaJaxrsAnnotations() {
+        throw new IllegalStateException("Utility class");
+    }
 
 }

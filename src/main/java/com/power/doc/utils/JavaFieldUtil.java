@@ -121,7 +121,7 @@ public class JavaFieldUtil {
      * getJsr303Comment
      *
      * @param annotations annotations
-     * @return
+     * @return Jsr comments
      */
     public static String getJsrComment(List<JavaAnnotation> annotations) {
         StringBuilder sb = new StringBuilder();
@@ -154,7 +154,7 @@ public class JavaFieldUtil {
             return DocGlobalConstants.EMPTY;
         }
         StringBuilder finalSb = new StringBuilder();
-        finalSb.append("Validate[").append(sb).append("]");
+        finalSb.append("\nValidate[").append(sb).append("]");
         return finalSb.toString();
     }
 

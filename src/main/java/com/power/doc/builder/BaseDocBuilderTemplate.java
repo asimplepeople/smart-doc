@@ -53,15 +53,36 @@ public class BaseDocBuilderTemplate {
 
     public static long NOW = System.currentTimeMillis();
 
+    public static void copyJarFile(String source, String target) {
+        ClasspathResourceLoader resourceLoader = new ClasspathResourceLoader("/template/");
+        Resource resource = resourceLoader.getResource(source);
+        try (FileWriter fileWriter = new FileWriter(target, false);
+             Reader reader = resource.openReader()) {
+            char[] c = new char[1024 * 1024];
+            int temp;
+            int len = 0;
+            while ((temp = reader.read()) != -1) {
+                c[len] = (char) temp;
+                len++;
+            }
+            reader.close();
+            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+            bufferedWriter.write(c, 0, len);
+            bufferedWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     /**
      * check condition and init
      *
-     * @param config Api config
+     * @param config       Api config
      * @param checkOutPath check out path
      */
-    public void checkAndInit(ApiConfig config,boolean checkOutPath) {
+    public void checkAndInit(ApiConfig config, boolean checkOutPath) {
         this.checkAndInitForGetApiData(config);
-        if (StringUtil.isEmpty(config.getOutPath())&&!checkOutPath) {
+        if (StringUtil.isEmpty(config.getOutPath()) && !checkOutPath) {
             throw new RuntimeException("doc output path can't be null or empty");
         }
     }
@@ -72,10 +93,10 @@ public class BaseDocBuilderTemplate {
      * @param config Api config
      */
     public void checkAndInitForGetApiData(ApiConfig config) {
-        if (null == config) {
+        if (Objects.isNull(config)) {
             throw new NullPointerException("ApiConfig can't be null");
         }
-        if (null != config.getLanguage()) {
+        if (Objects.nonNull(config.getLanguage())) {
             System.setProperty(DocGlobalConstants.DOC_LANGUAGE, config.getLanguage().getCode());
         } else {
             //default is chinese
@@ -96,7 +117,12 @@ public class BaseDocBuilderTemplate {
         if (StringUtil.isEmpty(config.getFramework())) {
             config.setFramework(FrameworkEnum.SPRING.getFramework());
         }
-
+        if (StringUtil.isEmpty(config.getAuthor())) {
+            config.setAuthor(System.getProperty("user.name"));
+        }
+        if (Objects.isNull(config.getReplace())) {
+            config.setReplace(Boolean.TRUE);
+        }
     }
 
     public Map<String, String> setDirectoryLanguageVariable(ApiConfig config, Template mapper) {
@@ -142,26 +168,6 @@ public class BaseDocBuilderTemplate {
             return fileName;
         } else {
             return fileName + suffix;
-        }
-    }
-    public static void copyJarFile(String source, String target) {
-        ClasspathResourceLoader resourceLoader = new ClasspathResourceLoader("/template/");
-        Resource resource = resourceLoader.getResource(source);
-        try (FileWriter fileWriter = new FileWriter(target, false);
-             Reader reader = resource.openReader()) {
-            char[] c = new char[1024 * 1024];
-            int temp;
-            int len = 0;
-            while ((temp = reader.read()) != -1) {
-                c[len] = (char) temp;
-                len++;
-            }
-            reader.close();
-            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-            bufferedWriter.write(c, 0, len);
-            bufferedWriter.close();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 }

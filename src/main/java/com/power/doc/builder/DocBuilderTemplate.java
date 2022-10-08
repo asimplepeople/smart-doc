@@ -30,12 +30,7 @@ import com.power.doc.constants.HighlightStyle;
 import com.power.doc.constants.TemplateVariable;
 import com.power.doc.constants.TornaConstants;
 import com.power.doc.factory.BuildTemplateFactory;
-import com.power.doc.model.ApiAllData;
-import com.power.doc.model.ApiConfig;
-import com.power.doc.model.ApiDoc;
-import com.power.doc.model.ApiDocDict;
-import com.power.doc.model.ApiErrorCode;
-import com.power.doc.model.ApiMethodDoc;
+import com.power.doc.model.*;
 import com.power.doc.template.IDocBuildTemplate;
 import com.power.doc.utils.BeetlTemplateUtil;
 import com.power.doc.utils.DocUtil;
@@ -47,17 +42,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import static com.power.doc.constants.DocGlobalConstants.CSS_CDN;
-import static com.power.doc.constants.DocGlobalConstants.CSS_CDN_CH;
-import static com.power.doc.constants.DocGlobalConstants.FILE_SEPARATOR;
-import static com.power.doc.constants.DocGlobalConstants.SEARCH_JS_OUT;
+import static com.power.doc.constants.DocGlobalConstants.*;
 
 /**
  * @author yu 2019/9/26.
  */
 public class DocBuilderTemplate extends BaseDocBuilderTemplate {
 
-    private static long now = System.currentTimeMillis();
+    private static final long now = System.currentTimeMillis();
 
     /**
      * get all api data
@@ -196,9 +188,7 @@ public class DocBuilderTemplate extends BaseDocBuilderTemplate {
             ApiDoc apiDoc1 = new ApiDoc();
             int codeIndex = 0;
             if (isOnlyDefaultGroup) {
-                if (apiDocs.size() > 0) {
-                    codeIndex = apiDocs.get(0).getChildrenApiDocs().size();
-                }
+                codeIndex = apiDocs.get(0).getChildrenApiDocs().size();
             } else {
                 codeIndex = apiDocList.size();
             }
@@ -383,28 +373,6 @@ public class DocBuilderTemplate extends BaseDocBuilderTemplate {
         mapper.binding(TemplateVariable.DICT_LIST.getVariable(), directoryList);
         FileUtil.nioWriteFile(mapper.render(), config.getOutPath() + FILE_SEPARATOR + outPutFileName);
     }
-
-
-    /**
-     * Generate a single controller api document
-     *
-     * @param projectBuilder projectBuilder
-     * @param controllerName controller name
-     * @param template       template
-     * @param fileExtension  file extension
-     */
-    public void buildSingleApi(ProjectDocConfigBuilder projectBuilder, String controllerName, String template, String fileExtension) {
-        ApiConfig config = projectBuilder.getApiConfig();
-        FileUtil.mkdirs(config.getOutPath());
-        IDocBuildTemplate<ApiDoc> docBuildTemplate = BuildTemplateFactory.getDocBuildTemplate(config.getFramework());
-        ApiDoc doc = docBuildTemplate.getSingleApiData(projectBuilder, controllerName);
-        Template mapper = BeetlTemplateUtil.getByName(template);
-        mapper.binding(TemplateVariable.DESC.getVariable(), doc.getDesc());
-        mapper.binding(TemplateVariable.NAME.getVariable(), doc.getName());
-        mapper.binding(TemplateVariable.LIST.getVariable(), doc.getList());
-        FileUtil.writeFileNotAppend(mapper.render(), config.getOutPath() + FILE_SEPARATOR + doc.getName() + fileExtension);
-    }
-
 
     private List<ApiDoc> listOfApiData(ApiConfig config, JavaProjectBuilder javaProjectBuilder) {
         this.checkAndInitForGetApiData(config);

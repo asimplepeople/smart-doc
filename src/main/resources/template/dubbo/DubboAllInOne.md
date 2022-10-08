@@ -8,7 +8,7 @@
 Version |Update Time |Status |Author |Description
 ---|---|---|---|---
 <% for(revisionLog in revisionLogList){ %>
-${revisionLog.version} |${revisionLog.revisionTime} |${revisionLog.status} |${revisionLog.author} |${revisionLog.remarks}
+${revisionLog.version} |${revisionLog.revisionTime} |${revisionLog.status} |${revisionLog.author} |${lineBreaksToBr(revisionLog.remarks)}
 <%}%>
 
 <%}%>
@@ -75,10 +75,10 @@ ${consumerConfigExample}
 <%if(isNotEmpty(doc.requestParams)){%>
 **Invoke-parameters:**
 
-Parameter|Type|Description|Required|Since
+Parameter|Type|Required|Description|Since
 ---|---|---|---|---
 <% for(param in doc.requestParams){ %>
-${param.field}|${param.type}|${param.desc}|${param.required}|${param.version}
+${param.field}|${param.type}|${param.required}|${lineBreaksToBr(param.desc)}|${param.version}
 <%}%>
 <%}%>
 
@@ -88,13 +88,14 @@ ${param.field}|${param.type}|${param.desc}|${param.required}|${param.version}
 Field | Type|Description|Since
 ---|---|---|---
 <% for(param in doc.responseParams){ %>
-${param.field}|${param.type}|${param.desc}|${param.version}
+${param.field}|${param.type}|${lineBreaksToBr(param.desc)}|${param.version}
 <%}%>
 <%}%>
 
 <%}%>
 <%}%>
 <%if(isNotEmpty(errorCodeList)){%>
+
 ## ${errorListTitle}
 
 Error code |Description
@@ -106,11 +107,14 @@ ${error.value}|${htmlEscape(error.desc)}
 <%}%>
 
 <%if(isNotEmpty(dictList)){%>
+
 ## ${dictListTitle}
 
 <% for(dict in dictList){ %>
+
 ### ${dict.title}
-Code |Type|Description 
+
+Code |Type|Description
 ---|---|---
 <% for(dataDict in dict.dataDictList){ %>
 ${dataDict.value}|${dataDict.type}|${htmlEscape(dataDict.desc)}

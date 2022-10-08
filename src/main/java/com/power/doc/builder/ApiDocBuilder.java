@@ -61,15 +61,15 @@ public class ApiDocBuilder {
      */
     public static void buildApiDoc(ApiConfig config, JavaProjectBuilder javaProjectBuilder) {
         DocBuilderTemplate builderTemplate = new DocBuilderTemplate();
-        builderTemplate.checkAndInit(config,false);
+        builderTemplate.checkAndInit(config, Boolean.FALSE);
         config.setAdoc(false);
         config.setParamsDataToTree(false);
         ProjectDocConfigBuilder configBuilder = new ProjectDocConfigBuilder(config, javaProjectBuilder);
-        IDocBuildTemplate docBuildTemplate = BuildTemplateFactory.getDocBuildTemplate(config.getFramework());
+        IDocBuildTemplate<ApiDoc> docBuildTemplate = BuildTemplateFactory.getDocBuildTemplate(config.getFramework());
         List<ApiDoc> apiDocList = docBuildTemplate.getApiData(configBuilder);
         if (config.isAllInOne()) {
             String version = config.isCoverOld() ? "" : "-V" + DateTimeUtil.long2Str(System.currentTimeMillis(), DATE_FORMAT);
-            String docName = builderTemplate.allInOneDocName(config,"AllInOne" + version + ".md",".md");
+            String docName = builderTemplate.allInOneDocName(config, "AllInOne" + version + ".md", ".md");
             apiDocList = docBuildTemplate.handleApiGroup(apiDocList, config);
             builderTemplate.buildAllInOne(apiDocList, config, javaProjectBuilder, ALL_IN_ONE_MD_TPL, docName);
         } else {
@@ -77,20 +77,5 @@ public class ApiDocBuilder {
             builderTemplate.buildErrorCodeDoc(config, ERROR_CODE_LIST_MD_TPL, ERROR_CODE_LIST_MD, javaProjectBuilder);
             builderTemplate.buildDirectoryDataDoc(config, javaProjectBuilder, DICT_LIST_MD_TPL, DICT_LIST_MD);
         }
-    }
-
-    /**
-     * Generate a single controller api document
-     *
-     * @param config         (ApiConfig
-     * @param controllerName controller name
-     */
-    public static void buildSingleApiDoc(ApiConfig config, String controllerName) {
-        config.setAdoc(false);
-        JavaProjectBuilder javaProjectBuilder = JavaProjectBuilderHelper.create();
-        ProjectDocConfigBuilder configBuilder = new ProjectDocConfigBuilder(config, javaProjectBuilder);
-        DocBuilderTemplate builderTemplate = new DocBuilderTemplate();
-        builderTemplate.checkAndInit(config,false);
-        builderTemplate.buildSingleApi(configBuilder, controllerName, API_DOC_MD_TPL, API_EXTENSION);
     }
 }
