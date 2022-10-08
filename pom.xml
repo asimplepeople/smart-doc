@@ -2,7 +2,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
 <!--    <groupId>com.github.shalousun</groupId>-->
-    <groupId>com.yundong.plugin</groupId>
+    <groupId>com.yundong</groupId>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>smart-doc</artifactId>
     <packaging>jar</packaging>
