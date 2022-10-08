@@ -38,6 +38,7 @@ import com.power.doc.model.annotation.FrameworkAnnotations;
 import com.power.doc.model.rpc.RpcApiDoc;
 import com.power.doc.utils.*;
 import com.thoughtworks.qdox.model.*;
+import com.thoughtworks.qdox.model.expression.AnnotationValue;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
