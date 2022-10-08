@@ -112,7 +112,7 @@ public class RpcDocBuildTemplate implements IDocBuildTemplate<RpcApiDoc>, IBaseD
                 throw new RuntimeException("Unable to find comment for method " + method.getName() + " in " + cls.getCanonicalName());
             }
             boolean deprecated = false;
-            String ydcgatewayUrl = null;
+            String ydcGatewayUrl = null;
             //Deprecated
             List<JavaAnnotation> annotations = method.getAnnotations();
             for (JavaAnnotation annotation : annotations) {
@@ -123,7 +123,7 @@ public class RpcDocBuildTemplate implements IDocBuildTemplate<RpcApiDoc>, IBaseD
                 if (DocAnnotationConstants.YDCGATEWAY.equals(annotationName)) {
                     AnnotationValue annotationValue = annotation.getProperty("url");
                     if (Objects.nonNull(annotationValue)) {
-                        ydcgatewayUrl = DocUtil.resolveAnnotationValue(annotationValue);
+                        ydcGatewayUrl = StringUtil.removeQuotes(DocUtil.resolveAnnotationValue(annotationValue));
                     }
                 }
             }
@@ -151,7 +151,7 @@ public class RpcDocBuildTemplate implements IDocBuildTemplate<RpcApiDoc>, IBaseD
                 apiMethodDoc.setAuthor(authorValue);
             }
             apiMethodDoc.setDetail(apiNoteValue != null ? apiNoteValue : "");
-            apiMethodDoc.setDetail(Optional.ofNullable(ydcgatewayUrl).orElse(apiMethodDoc.getDetail()));
+            apiMethodDoc.setDetail(Optional.ofNullable(ydcGatewayUrl).orElse(apiMethodDoc.getDetail()));
             if (Objects.nonNull(method.getTagByName(IGNORE))) {
                 continue;
             }
