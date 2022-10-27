@@ -1,14 +1,15 @@
 package com.power.doc.util;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.power.doc.constants.DocGlobalConstants;
 import com.power.doc.constants.DocLanguage;
 import com.power.doc.enums.IEnum;
 import com.power.doc.enums.OrderEnum;
 import com.power.doc.utils.DocUtil;
-import org.junit.jupiter.api.Test;
 
-import java.util.HashMap;
-import java.util.Map;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author yu 2018/12/10.
@@ -48,5 +49,12 @@ public class DocUtilTest {
         String controllerName = "com.aaa.cc.controlle";
 
         System.out.println(DocUtil.isMatch(pattern, controllerName));
+    }
+
+    @Test
+    public void  testFormatPathUrl() {
+        System.setProperty(DocGlobalConstants.DOC_LANGUAGE, DocLanguage.CHINESE.getCode());
+        String url = "http://localhost:8080/detail/{id:[a-zA-Z0-9]{3}}/{name:[a-zA-Z0-9]{3}}";
+        System.out.println(DocUtil.formatPathUrl(url));
     }
 }
